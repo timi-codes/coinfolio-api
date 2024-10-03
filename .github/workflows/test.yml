@@ -13,6 +13,9 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
+      - name: Check yarn.lock consistency
+        run: git diff --exit-code yarn.lock
+
       - name: Build the Docker image
         run: docker build -t $IMAGE_TAG --target=create-build .
  
