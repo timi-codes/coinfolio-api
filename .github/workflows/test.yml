@@ -3,7 +3,7 @@ name: Run Pipeline Checks
 on: [pull_request]
 
 env:
-    IMAGE_TAG: pocket-app
+    IMAGE_TAG: coinfolio
 
 jobs:
   pipeline:
