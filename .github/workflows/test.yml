@@ -1,0 +1,26 @@
+name: Run Pipeline
+
+on: [pull_request]
+
+env:
+    IMAGE_TAG: pocket-app
+
+jobs:
+  pipeline:
+    name: linting(prettier & eslint), docker build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+ 
+      - name: Run Prettier
+        run: docker run $IMAGE_TAG sh -c 'yarn format:verify'
+ 
+      - name: Run ESLint
+        run: docker run $IMAGE_TAG sh -c 'yarn lint'
+
+      - name: Build the Docker image
+        run: docker build -t $IMAGE_TAG --target=create-build .
+ 
+      - name: Run tests
+        run: docker run $IMAGE_TAG sh -c 'yarn test'
