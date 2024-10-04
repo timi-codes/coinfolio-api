@@ -8,11 +8,15 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       validationSchema: Joi.object({
-        DATABASE_URL: Joi.string().required(),
+        host: Joi.string().required(),
+        port: Joi.number().required(),
+        username: Joi.string().required(),
+        password: Joi.string().required(),
+        database: Joi.string().required(),
       }),
     }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

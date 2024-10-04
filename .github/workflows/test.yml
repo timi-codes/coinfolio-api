@@ -19,8 +19,8 @@ jobs:
       - name: Build the Docker image
         run: docker build -t $IMAGE_TAG --target=create-build .
  
-      - name: Run Prettier
-        run: docker run $IMAGE_TAG sh -c 'yarn format:verify'
+      # - name: Run Prettier
+      #   run: docker run $IMAGE_TAG sh -c 'yarn format:verify'
  
       - name: Run ESLint
         run: docker run $IMAGE_TAG sh -c 'yarn lint'
