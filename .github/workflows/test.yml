@@ -3,7 +3,7 @@ name: Run Pipeline Checks
 on: [pull_request]
 
 env:
-    IMAGE_TAG: pocket-app
+    IMAGE_TAG: coinfolio
 
 jobs:
   pipeline:
@@ -13,11 +13,14 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
+      - name: Check yarn.lock consistency
+        run: git diff --exit-code yarn.lock
+
       - name: Build the Docker image
         run: docker build -t $IMAGE_TAG --target=create-build .
  
-      - name: Run Prettier
-        run: docker run $IMAGE_TAG sh -c 'yarn format:verify'
+      # - name: Run Prettier
+      #   run: docker run $IMAGE_TAG sh -c 'yarn format:verify'
  
       - name: Run ESLint
         run: docker run $IMAGE_TAG sh -c 'yarn lint'

@@ -3,13 +3,15 @@ services:
     build:
       context: .
       target: base
-    command: yarn run dev
+    command: yarn run start:dev
     environment:
-      - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
       - '4000:4000'
     volumes:
       - ./src:/user/src/app/src
+    env_file:
+      - docker.env
     networks:
       - coinfolio_network
     depends_on:
@@ -24,8 +26,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data 
     environment:
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+      - docker.env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -37,3 +42,4 @@ volumes:
 networks:
   coinfolio_network:
     driver: bridge
+
