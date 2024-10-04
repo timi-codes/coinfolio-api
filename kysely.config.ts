@@ -1,8 +1,6 @@
 import {
-	PostgresAdapter,
-	PostgresDriver,
-	PostgresIntrospector,
-	PostgresQueryCompiler,
+	PostgresDialect,
+	Kysely,
 } from 'kysely'
 import { defineConfig } from 'kysely-ctl';
 import { Pool } from 'pg';
@@ -14,28 +12,17 @@ config();
 const configService = new ConfigService();
 
 export default defineConfig({
-	dialect: {
-		createAdapter() {
-			return new PostgresAdapter()
-		},
-		createDriver() {
-			return new PostgresDriver({
-				pool: new Pool({
-					host: configService.get('DB_HOST'),
-					port: configService.get('DB_PORT'),
-					database: configService.get('DB_NAME'),
-					user: configService.get('DB_USER'),
-					password: configService.get('DB_PASSWORD'),
-				}),
-			})
-		},
-		createIntrospector(db) {
-			return new PostgresIntrospector(db)
-		},
-		createQueryCompiler() {
-			return new PostgresQueryCompiler()
-		},
-	},
+	kysely: new Kysely<unknown>({
+		dialect: new PostgresDialect({
+			pool: new Pool({
+				host: configService.get('DB_HOST'),
+				port: configService.get('DB_PORT'),
+				database: configService.get('DB_NAME'),
+				user: configService.get('DB_USER'),
+				password: configService.get('DB_PASSWORD'),
+			}),
+		}),
+	}),
 	migrations: {
 		migrationFolder: 'src/database/migrations',
 	},
