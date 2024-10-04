@@ -2,6 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
+import { DB } from './db.interface';
 
 @Global()
 @Module({
@@ -9,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
     {
       provide: 'Kysely',
       useFactory: async (configService: ConfigService) => {
-        const db = new Kysely({
+        const db = new Kysely<DB>({
           dialect: new PostgresDialect({
             pool: new Pool({
               host: configService.get('DB_HOST'),
