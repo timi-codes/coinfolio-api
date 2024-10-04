@@ -12,6 +12,7 @@ services:
       - ./src:/user/src/app/src
     env_file:
       - docker.env
+      - .env
     networks:
       - coinfolio_network
     depends_on:
@@ -31,6 +32,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     env_file:
       - docker.env
+      - .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
