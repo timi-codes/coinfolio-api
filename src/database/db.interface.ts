@@ -3,7 +3,7 @@ import {
   IAsset,
   IFungibleToken,
   INonFungibleToken,
-} from '../assets/assets.interface';
+} from '../assets/interfaces/assets.interface';
 
 interface ITables {
   assets: IAsset;
@@ -11,4 +11,4 @@ interface ITables {
   nfts: INonFungibleToken;
 }
 
-export class DB extends Kysely<ITables> {}
+export class DB extends Kysely<ITables> { }

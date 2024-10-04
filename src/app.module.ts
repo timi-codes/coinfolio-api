@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/init.module';
 import { validationSchemaForEnv } from './config/env-validation-schema';
+import { AssetsModule } from './assets/assets.module';
 
 @Module({
   imports: [
@@ -12,8 +13,9 @@ import { validationSchemaForEnv } from './config/env-validation-schema';
       validationSchema: validationSchemaForEnv,
     }),
     DatabaseModule,
+    AssetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
