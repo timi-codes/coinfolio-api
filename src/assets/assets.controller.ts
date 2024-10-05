@@ -42,8 +42,13 @@ export class AssetsController {
   }
 
   @Get()
-  findAll() {
-    return this.assetsService.findAll();
+  async findAll() {
+    const assets = await this.assetsService.findAll();
+    return {
+      success: true,
+      message: 'Assets fetched successfully',
+      data: assets,
+    };
   }
 
   @Delete(':id')
