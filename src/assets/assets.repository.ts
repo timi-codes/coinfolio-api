@@ -52,7 +52,10 @@ export class AssetsRepository {
     return `This action returns a #${id} asset`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} asset`;
+  async remove(id: string) {
+    return await this.db
+      .deleteFrom('assets')
+      .where('assets.id', '=', id)
+      .executeTakeFirst();
   }
 }

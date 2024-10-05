@@ -34,6 +34,7 @@ export function IsERC20(
             } else if (typeof value === 'number') {
               return BigInt(value) > 0n;
             }
+            return value !== undefined && value !== null && value !== '';
           }
           return true;
         },
