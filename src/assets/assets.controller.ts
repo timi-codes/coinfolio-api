@@ -13,10 +13,15 @@ import {
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
+import { TasksService } from 'src/tasks/tasks.service';
 
 @Controller('assets')
 export class AssetsController {
-  constructor(private readonly assetsService: AssetsService) {}
+  constructor(
+    private readonly assetsService: AssetsService,
+    private readonly tasksService: TasksService,
+  ) {}
+
   @Post()
   async create(@Body() createAssetDto: CreateAssetDto) {
     try {
@@ -67,5 +72,14 @@ export class AssetsController {
         message: 'Asset already deleted or not found',
       };
     }
+  }
+
+  @Post('update-prices')
+  async updatePrice() {
+    await this.tasksService.handleDailyPriceUpdate();
+    return {
+      success: true,
+      message: 'Asset prices updated successfully',
+    };
   }
 }
