@@ -5,7 +5,7 @@ import {
   FungibleToken,
   NonFungibleToken,
 } from '../database/db.interface';
-import { Insertable } from 'kysely';
+import { Insertable, Selectable } from 'kysely';
 
 @Injectable()
 export class AssetsRepository {
@@ -71,11 +71,12 @@ export class AssetsRepository {
       .execute();
 
     // Remove null quantity and token_id values
-    const assets = result.map((asset) =>
-      Object.fromEntries(
+    const assets: Selectable<Asset>[] = result.map((asset) => {
+      const filteredAsset = Object.fromEntries(
         Object.entries(asset).filter(([, value]) => value !== null),
-      ),
-    );
+      ) as Selectable<Asset>;
+      return filteredAsset;
+    });
     return assets;
   }
 
