@@ -44,8 +44,39 @@ export class AssetsRepository {
     return nft;
   }
 
-  findAll() {
-    return `This action returns all assets`;
+  async findAll() {
+    const result = await this.db
+      .selectFrom('assets')
+      .leftJoin('fts', 'fts.id', 'assets.id')
+      .leftJoin('nfts', 'nfts.id', 'assets.id')
+      .select([
+        'assets.id',
+        'assets.name',
+        'assets.symbol',
+        'assets.contract_address',
+        'assets.chain',
+        'assets.type',
+        'assets.created_at',
+        'assets.updated_at',
+        'fts.quantity',
+        'nfts.token_id',
+      ])
+      .where((eb) =>
+        eb.or([
+          eb('fts.quantity', 'is not', null),
+          eb('nfts.token_id', 'is not', null),
+        ]),
+      )
+      .orderBy('assets.created_at', 'desc')
+      .execute();
+
+    // Remove null quantity and token_id values
+    const assets = result.map((asset) =>
+      Object.fromEntries(
+        Object.entries(asset).filter(([, value]) => value !== null),
+      ),
+    );
+    return assets;
   }
 
   findOne(id: number) {
