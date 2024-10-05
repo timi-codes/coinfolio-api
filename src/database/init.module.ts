@@ -1,16 +1,17 @@
 import { Module, Global } from '@nestjs/common';
-import { Kysely, PostgresDialect } from 'kysely';
+import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
-import { DB } from './db.interface';
+import { Database } from './db.interface';
 
 @Global()
 @Module({
+  exports: [Database],
   providers: [
     {
-      provide: 'Kysely',
+      provide: Database,
       useFactory: async (configService: ConfigService) => {
-        const db = new Kysely<DB>({
+        const db = new Database({
           dialect: new PostgresDialect({
             pool: new Pool({
               host: configService.get('DB_HOST'),
@@ -26,6 +27,5 @@ import { DB } from './db.interface';
       inject: [ConfigService],
     },
   ],
-  exports: ['Kysely'],
 })
 export class DatabaseModule {}
