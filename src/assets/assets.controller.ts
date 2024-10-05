@@ -8,18 +8,24 @@ import {
   HttpException,
   ConflictException,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
+import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
 
 @Controller('assets')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
-
   @Post()
   async create(@Body() createAssetDto: CreateAssetDto) {
     try {
-      return await this.assetsService.create(createAssetDto);
+      const asset = await this.assetsService.create(createAssetDto);
+      return {
+        success: true,
+        message: `${asset.name}(${asset.symbol}) added successfully`,
+        data: asset,
+      };
     } catch (error) {
       if (
         error.message.includes('duplicate key value violates unique constraint')
@@ -28,7 +34,10 @@ export class AssetsController {
           'Asset with this contract address already exists',
         );
       }
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -38,7 +47,20 @@ export class AssetsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.assetsService.remove(+id);
+  @UsePipes(new ValidateUuidPipe())
+  async remove(@Param('id') id: string) {
+    const result = await this.assetsService.remove(id);
+
+    if (result.numDeletedRows > 0) {
+      return {
+        success: true,
+        message: 'Asset deleted successfully',
+      };
+    } else {
+      return {
+        success: true,
+        message: 'Asset already deleted or not found',
+      };
+    }
   }
 }

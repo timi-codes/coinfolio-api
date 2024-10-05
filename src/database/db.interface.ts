@@ -1,5 +1,5 @@
 import { Kysely, Generated } from 'kysely';
-import { AssetType } from 'src/assets/entities/asset.entity';
+import { AssetType } from '../assets/entities/asset.entity';
 
 export interface Asset {
   id: Generated<string>;
