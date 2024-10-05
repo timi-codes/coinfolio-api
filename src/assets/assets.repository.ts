@@ -4,7 +4,7 @@ import {
   Database,
   FungibleToken,
   NonFungibleToken,
-} from 'src/database/db.interface';
+} from '../database/db.interface';
 import { Insertable } from 'kysely';
 
 @Injectable()
