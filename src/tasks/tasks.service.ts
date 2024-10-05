@@ -4,10 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import Moralis from 'moralis';
 import { catchError, firstValueFrom } from 'rxjs';
+import { AssetsRepository } from '../assets/assets.repository';
+import { AssetType } from '../assets/entities/asset.entity';
+import { Database } from '../database/db.interface';
 import { map } from 'rxjs';
-import { AssetsRepository } from 'src/assets/assets.repository';
-import { AssetType } from 'src/assets/entities/asset.entity';
-import { Database } from 'src/database/db.interface';
+
 
 @Injectable()
 export class TasksService {
