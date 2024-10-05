@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/init.module';
 import { validationSchemaForEnv } from './config/env-validation-schema';
 import { AssetsModule } from './assets/assets.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AssetsModule } from './assets/assets.module';
       validationSchema: validationSchemaForEnv,
     }),
     DatabaseModule,
+    TasksModule,
     AssetsModule,
   ],
   controllers: [AppController],

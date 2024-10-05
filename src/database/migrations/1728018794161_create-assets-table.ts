@@ -29,7 +29,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'uuid', (col) =>
       col.primaryKey().references('assets.id').onDelete('cascade'),
     )
-    .addColumn('quantity', 'bigint', (col) => col.notNull())
+    .addColumn('quantity', 'numeric', (col) => col.notNull())
     .addColumn('created_at', 'timestamp', (col) =>
       col.notNull().defaultTo(sql`now()`),
     )
