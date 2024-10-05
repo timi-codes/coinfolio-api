@@ -45,7 +45,7 @@ export class AssetsService {
   }
 
   findAll() {
-    return `This action returns all assets`;
+    return this.assetsRepository.findAll();
   }
 
   remove(id: string) {
