@@ -1,14 +1,31 @@
-import { Kysely } from 'kysely';
-import {
-  IAsset,
-  IFungibleToken,
-  INonFungibleToken,
-} from '../assets/interfaces/assets.interface';
+import { Kysely, Generated } from 'kysely';
+import { AssetType } from '../assets/entities/asset.entity';
 
-interface ITables {
-  assets: IAsset;
-  fts: IFungibleToken;
-  nfts: INonFungibleToken;
+export interface Asset {
+  id: Generated<string>;
+  name: string;
+  symbol: string;
+  contract_address: string;
+  chain: number;
+  type: AssetType;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
-export class DB extends Kysely<ITables> { }
+export interface FungibleToken {
+  id: Generated<string>;
+  quantity: bigint;
+}
+
+export interface NonFungibleToken {
+  id: Generated<string>;
+  token_id: string;
+}
+
+interface Tables {
+  assets: Asset;
+  fts: FungibleToken;
+  nfts: NonFungibleToken;
+}
+
+export class Database extends Kysely<Tables> {}

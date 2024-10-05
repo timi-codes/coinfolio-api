@@ -1,1 +1,4 @@
-export class Asset {}
+export enum AssetType {
+  ERC20 = 'ERC-20',
+  ERC721 = 'ERC-721',
+}
