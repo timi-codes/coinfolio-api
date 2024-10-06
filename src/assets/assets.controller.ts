@@ -9,11 +9,14 @@ import {
   ConflictException,
   HttpStatus,
   UsePipes,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
 import { TasksService } from 'src/tasks/tasks.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('assets')
 export class AssetsController {
@@ -22,10 +25,17 @@ export class AssetsController {
     private readonly tasksService: TasksService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  async create(@Body() createAssetDto: CreateAssetDto) {
+  async create(
+    @Body() createAssetDto: CreateAssetDto,
+    @Req() request: Request,
+  ) {
     try {
-      const asset = await this.assetsService.create(createAssetDto);
+      const user = request['user'];
+      console.log(user);
+
+      const asset = await this.assetsService.create(user, createAssetDto);
       return {
         success: true,
         message: `${asset.name}(${asset.symbol}) added successfully`,

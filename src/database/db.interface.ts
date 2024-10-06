@@ -14,11 +14,15 @@ export interface Asset {
 
 export interface FungibleToken {
   id: Generated<string>;
+  asset_id: string;
+  user_id: string;
   quantity: bigint;
 }
 
 export interface NonFungibleToken {
   id: Generated<string>;
+  asset_id: string;
+  user_id: string;
   token_id: string;
 }
 

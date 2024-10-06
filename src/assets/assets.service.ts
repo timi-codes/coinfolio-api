@@ -9,6 +9,8 @@ import {
   GetNFTMetadataResponseAdapter,
   GetTokenMetadataResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
+import { User } from 'src/database/db.interface';
+import { Insertable } from 'kysely';
 
 @Injectable()
 export class AssetsService {
@@ -20,27 +22,37 @@ export class AssetsService {
     Moralis.start({ apiKey: moralisApiKey });
   }
 
-  async create(data: CreateAssetDto) {
+  async create(user: Insertable<User>, data: CreateAssetDto) {
     const tokenMetadata = await this.fetchTokenMetadata(data);
 
-    const asset = await this.assetsRepository.create({
+    const asset = await this.assetsRepository.findOrCreate({
       name: tokenMetadata.name,
       symbol: tokenMetadata.symbol,
-      contract_address: tokenMetadata.token_address || data.contract_address,
+      contract_address:
+        tokenMetadata.token_address.toLowerCase() ||
+        data.contract_address.toLowerCase(),
       chain: data.chain,
       type: data.type,
     });
 
     if (data.type === AssetType.ERC721) {
-      const nft = await this.assetsRepository.nft(asset.id, {
+      const nft = await this.assetsRepository.nft({
         token_id: tokenMetadata.token_id,
+        user_id: user.id,
+        asset_id: asset.id,
       });
       return { ...asset, token_id: nft.token_id };
     } else if (data.type === AssetType.ERC20) {
-      const token = await this.assetsRepository.ft(asset.id, {
+      const token = await this.assetsRepository.ft({
         quantity: data.quantity,
+        user_id: user.id,
+        asset_id: asset.id,
       });
-      return { ...asset, quantity: token.quantity };
+
+      return {
+        ...asset,
+        ...token,
+      };
     }
   }
 

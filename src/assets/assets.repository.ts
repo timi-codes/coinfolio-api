@@ -20,25 +20,35 @@ export class AssetsRepository {
     return asset;
   }
 
-  async ft(asset_id: string, data: Omit<FungibleToken, 'id'>) {
+  async findOrCreate(data: Insertable<Asset>) {
+    const existingAsset = await this.db
+      .selectFrom('assets')
+      .where('contract_address', '=', data.contract_address)
+      .selectAll()
+      .executeTakeFirst();
+
+    if (existingAsset) {
+      return existingAsset;
+    }
+    return this.create(data);
+  }
+
+  async ft(data: Insertable<FungibleToken>) {
     const ft = await this.db
       .insertInto('fts')
       .values({
-        id: asset_id,
         ...data,
+        user_id: data.user_id.toString(),
       })
       .returningAll()
       .executeTakeFirstOrThrow();
     return ft;
   }
 
-  async nft(asset_id: string, data: Omit<NonFungibleToken, 'id'>) {
+  async nft(data: Insertable<NonFungibleToken>) {
     const nft = await this.db
       .insertInto('nfts')
-      .values({
-        id: asset_id,
-        ...data,
-      })
+      .values({ ...data })
       .returningAll()
       .executeTakeFirstOrThrow();
     return nft;

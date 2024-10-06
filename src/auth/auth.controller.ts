@@ -40,6 +40,7 @@ export class AuthController {
       if (error instanceof BadRequestException) {
         throw error;
       }
+
       throw new UnauthorizedException('Invalid privy access token');
     }
   }
