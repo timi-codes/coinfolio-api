@@ -68,21 +68,31 @@ export class AssetsController {
     };
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @UsePipes(new ValidateUuidPipe())
-  async remove(@Param('id') id: string) {
-    const result = await this.assetsService.remove(id);
+  async remove(@Param('id') id: string, @Req() request: Request) {
+    try {
+      const user = request['user'];
 
-    if (result.numDeletedRows > 0) {
-      return {
-        success: true,
-        message: 'Asset deleted successfully',
-      };
-    } else {
-      return {
-        success: true,
-        message: 'Asset already deleted or not found',
-      };
+      const result = await this.assetsService.remove(id, user);
+
+      if (result.numDeletedRows > 0) {
+        return {
+          success: true,
+          message: 'Asset deleted successfully',
+        };
+      } else {
+        return {
+          success: true,
+          message: 'Asset already deleted or not found',
+        };
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

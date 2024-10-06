@@ -58,8 +58,8 @@ export class AssetsService {
     return this.assetsRepository.findAll();
   }
 
-  remove(id: string) {
-    return this.assetsRepository.remove(id);
+  remove(id: string, user: Insertable<User>) {
+    return this.assetsRepository.remove(id, user);
   }
 
   private async fetchTokenMetadata(

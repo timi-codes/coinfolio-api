@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Asset,
   Database,
   FungibleToken,
   NonFungibleToken,
+  User,
 } from '../database/db.interface';
 import { Insertable, Selectable } from 'kysely';
 
@@ -91,10 +92,28 @@ export class AssetsRepository {
     return `This action returns a #${id} asset`;
   }
 
-  async remove(id: string) {
-    return await this.db
-      .deleteFrom('assets')
-      .where('assets.id', '=', id)
+  async remove(id: string, user: Insertable<User>) {
+    const result = await this.db
+      .selectFrom('assets')
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
+      .select(['assets.type'])
+      .where((eb) =>
+        eb.or([
+          eb.and([eb('fts.id', '=', id), eb('fts.user_id', '=', user.id)]),
+          eb.and([eb('nfts.id', '=', id), eb('nfts.user_id', '=', user.id)]),
+        ]),
+      )
       .executeTakeFirst();
+
+    if (!result) throw new NotFoundException('Asset not found');
+
+    const table = result.type === 'ERC-20' ? 'fts' : 'nfts';
+
+    const deletedRows = await this.db
+      .deleteFrom(table)
+      .where('id', '=', id)
+      .executeTakeFirst();
+    return deletedRows;
   }
 }
