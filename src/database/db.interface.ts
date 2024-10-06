@@ -32,11 +32,19 @@ export interface AssetDailyPrice {
   created_at: Generated<Date>;
 }
 
+export interface User {
+  id: Generated<string>;
+  privy_id: string;
+  privy_wallet_address: string;
+  created_at: Generated<Date>;
+}
+
 interface Tables {
   assets: Asset;
   fts: FungibleToken;
   nfts: NonFungibleToken;
   asset_daily_prices: AssetDailyPrice;
+  users: User;
 }
 
 export class Database extends Kysely<Tables> {}
