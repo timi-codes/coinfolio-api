@@ -17,6 +17,7 @@ import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
 import { TasksService } from 'src/tasks/tasks.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AssetType } from './entities/asset.entity';
 
 @Controller('assets')
 export class AssetsController {
@@ -33,7 +34,6 @@ export class AssetsController {
   ) {
     try {
       const user = request['user'];
-      console.log(user);
 
       const asset = await this.assetsService.create(user, createAssetDto);
       return {
@@ -46,7 +46,9 @@ export class AssetsController {
         error.message.includes('duplicate key value violates unique constraint')
       ) {
         throw new ConflictException(
-          'Asset with this contract address already exists',
+          createAssetDto.type === AssetType.ERC721
+            ? 'NFT with this contract address and token ID already exists'
+            : 'Asset with this contract address already exists',
         );
       }
       throw new HttpException(

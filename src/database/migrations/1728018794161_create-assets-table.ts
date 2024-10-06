@@ -27,7 +27,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   db.schema
     .createTable('fts')
     .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().references('assets.id').onDelete('cascade'),
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
     )
     .addColumn('quantity', 'numeric', (col) => col.notNull())
     .addColumn('asset_id', 'uuid', (col) =>

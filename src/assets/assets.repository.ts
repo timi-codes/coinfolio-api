@@ -36,10 +36,7 @@ export class AssetsRepository {
   async ft(data: Insertable<FungibleToken>) {
     const ft = await this.db
       .insertInto('fts')
-      .values({
-        ...data,
-        user_id: data.user_id.toString(),
-      })
+      .values({ ...data })
       .returningAll()
       .executeTakeFirstOrThrow();
     return ft;

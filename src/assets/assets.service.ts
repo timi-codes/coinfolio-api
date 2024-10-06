@@ -28,9 +28,7 @@ export class AssetsService {
     const asset = await this.assetsRepository.findOrCreate({
       name: tokenMetadata.name,
       symbol: tokenMetadata.symbol,
-      contract_address:
-        tokenMetadata.token_address.toLowerCase() ||
-        data.contract_address.toLowerCase(),
+      contract_address: tokenMetadata.token_address || data.contract_address,
       chain: data.chain,
       type: data.type,
     });
