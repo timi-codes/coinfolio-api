@@ -92,7 +92,7 @@ export class AssetsRepository {
     return `This action returns a #${id} asset`;
   }
 
-  async remove(id: string, user: Insertable<User>) {
+  async remove(id: string, user: Selectable<User>) {
     const result = await this.db
       .selectFrom('assets')
       .leftJoin('fts', 'fts.asset_id', 'assets.id')

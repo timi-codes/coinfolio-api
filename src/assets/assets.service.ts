@@ -10,7 +10,7 @@ import {
   GetTokenMetadataResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
 import { User } from 'src/database/db.interface';
-import { Insertable } from 'kysely';
+import { Insertable, Selectable } from 'kysely';
 
 @Injectable()
 export class AssetsService {
@@ -39,7 +39,7 @@ export class AssetsService {
         user_id: user.id,
         asset_id: asset.id,
       });
-      return { ...asset, token_id: nft.token_id };
+      return { ...asset, ...nft };
     } else if (data.type === AssetType.ERC20) {
       const token = await this.assetsRepository.ft({
         quantity: data.quantity,
@@ -58,7 +58,7 @@ export class AssetsService {
     return this.assetsRepository.findAll();
   }
 
-  remove(id: string, user: Insertable<User>) {
+  remove(id: string, user: Selectable<User>) {
     return this.assetsRepository.remove(id, user);
   }
 
