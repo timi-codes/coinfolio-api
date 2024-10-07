@@ -9,7 +9,6 @@ import { AssetType } from '../assets/entities/asset.entity';
 import { Database } from '../database/db.interface';
 import { map } from 'rxjs';
 
-
 @Injectable()
 export class TasksService {
   private readonly logger = new Logger(TasksService.name);
@@ -25,7 +24,7 @@ export class TasksService {
   async handleDailyPriceUpdate() {
     this.logger.debug('Running daily price update for all assets');
 
-    const assets = await this.assetsRepository.findAll();
+    const assets = await this.db.selectFrom('assets').selectAll().execute();
 
     const promises = assets.map(async (asset) => {
       try {

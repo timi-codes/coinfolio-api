@@ -14,11 +14,15 @@ export interface Asset {
 
 export interface FungibleToken {
   id: Generated<string>;
+  asset_id: string;
+  user_id: string;
   quantity: bigint;
 }
 
 export interface NonFungibleToken {
   id: Generated<string>;
+  asset_id: string;
+  user_id: string;
   token_id: string;
 }
 
@@ -32,11 +36,19 @@ export interface AssetDailyPrice {
   created_at: Generated<Date>;
 }
 
+export interface User {
+  id: Generated<string>;
+  privy_id: string;
+  privy_wallet_address: string;
+  created_at: Generated<Date>;
+}
+
 interface Tables {
   assets: Asset;
   fts: FungibleToken;
   nfts: NonFungibleToken;
   asset_daily_prices: AssetDailyPrice;
+  users: User;
 }
 
 export class Database extends Kysely<Tables> {}

@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/init.module';
 import { validationSchemaForEnv } from './config/env-validation-schema';
 import { AssetsModule } from './assets/assets.module';
 import { TasksModule } from './tasks/tasks.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TasksModule } from './tasks/tasks.module';
     DatabaseModule,
     TasksModule,
     AssetsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
