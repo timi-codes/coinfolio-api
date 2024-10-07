@@ -27,9 +27,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
   db.schema
     .createTable('fts')
     .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().references('assets.id').onDelete('cascade'),
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
     )
     .addColumn('quantity', 'numeric', (col) => col.notNull())
+    .addColumn('asset_id', 'uuid', (col) =>
+      col.references('assets.id').onDelete('cascade').notNull(),
+    )
+    .addColumn('user_id', 'uuid', (col) =>
+      col.references('users.id').onDelete('cascade').notNull(),
+    )
     .addColumn('created_at', 'timestamp', (col) =>
       col.notNull().defaultTo(sql`now()`),
     )
@@ -41,9 +47,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
   db.schema
     .createTable('nfts')
     .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().references('assets.id').onDelete('cascade'),
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
     )
     .addColumn('token_id', 'varchar(255)', (col) => col.notNull())
+    .addColumn('asset_id', 'uuid', (col) =>
+      col.references('assets.id').onDelete('cascade').notNull(),
+    )
+    .addColumn('user_id', 'uuid', (col) =>
+      col.references('users.id').onDelete('cascade').notNull(),
+    )
     .addColumn('created_at', 'timestamp', (col) =>
       col.notNull().defaultTo(sql`now()`),
     )

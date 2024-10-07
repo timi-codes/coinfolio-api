@@ -4,11 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import Moralis from 'moralis';
 import { catchError, firstValueFrom } from 'rxjs';
-import { AssetsRepository } from '../assets/assets.repository';
 import { AssetType } from '../assets/entities/asset.entity';
 import { Database } from '../database/db.interface';
 import { map } from 'rxjs';
-
 
 @Injectable()
 export class TasksService {
@@ -16,7 +14,6 @@ export class TasksService {
 
   constructor(
     private readonly db: Database,
-    private readonly assetsRepository: AssetsRepository,
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
@@ -25,7 +22,7 @@ export class TasksService {
   async handleDailyPriceUpdate() {
     this.logger.debug('Running daily price update for all assets');
 
-    const assets = await this.assetsRepository.findAll();
+    const assets = await this.db.selectFrom('assets').selectAll().execute();
 
     const promises = assets.map(async (asset) => {
       try {
@@ -59,7 +56,7 @@ export class TasksService {
               }),
             );
           const priceData = await firstValueFrom(response);
-          price = priceData.floor_price_usd;
+          price = parseFloat(priceData.floor_price_usd);
         }
 
         await this.db
@@ -69,7 +66,7 @@ export class TasksService {
             symbol: asset.symbol,
             contract_address: asset.contract_address,
             chain: asset.chain,
-            price: price,
+            price,
           })
           .execute();
 

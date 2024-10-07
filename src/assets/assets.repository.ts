@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Asset,
   Database,
   FungibleToken,
   NonFungibleToken,
+  User,
 } from '../database/db.interface';
 import { Insertable, Selectable } from 'kysely';
 
@@ -20,61 +21,86 @@ export class AssetsRepository {
     return asset;
   }
 
-  async ft(asset_id: string, data: Omit<FungibleToken, 'id'>) {
+  async findOrCreate(data: Insertable<Asset>) {
+    const existingAsset = await this.db
+      .selectFrom('assets')
+      .where('contract_address', '=', data.contract_address)
+      .selectAll()
+      .executeTakeFirst();
+
+    if (existingAsset) {
+      return existingAsset;
+    }
+    return this.create(data);
+  }
+
+  async ft(data: Insertable<FungibleToken>) {
     const ft = await this.db
       .insertInto('fts')
-      .values({
-        id: asset_id,
-        ...data,
-      })
+      .values({ ...data })
       .returningAll()
       .executeTakeFirstOrThrow();
     return ft;
   }
 
-  async nft(asset_id: string, data: Omit<NonFungibleToken, 'id'>) {
+  async nft(data: Insertable<NonFungibleToken>) {
     const nft = await this.db
       .insertInto('nfts')
-      .values({
-        id: asset_id,
-        ...data,
-      })
+      .values({ ...data })
       .returningAll()
       .executeTakeFirstOrThrow();
     return nft;
   }
 
-  async findAll() {
+  async findAllBy(user: Selectable<User>) {
     const result = await this.db
       .selectFrom('assets')
-      .leftJoin('fts', 'fts.id', 'assets.id')
-      .leftJoin('nfts', 'nfts.id', 'assets.id')
-      .select([
-        'assets.id',
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
+      .select((eb) => [
+        eb
+          .fn<string>('coalesce', [eb.ref('fts.id'), eb.ref('nfts.id')])
+          .as('id'),
         'assets.name',
         'assets.symbol',
-        'assets.contract_address',
         'assets.chain',
+        'assets.contract_address',
         'assets.type',
-        'assets.created_at',
-        'assets.updated_at',
-        'fts.quantity',
-        'nfts.token_id',
+        eb.ref('nfts.token_id').as('token_id'),
+        eb.ref('fts.quantity').as('quantity'),
+        eb
+          .fn<string>('coalesce', [
+            eb.ref('nfts.created_at'),
+            eb.ref('fts.created_at'),
+          ])
+          .as('created_at'),
+        eb
+          .fn<string>('coalesce', [
+            eb.ref('nfts.updated_at'),
+            eb.ref('fts.updated_at'),
+          ])
+          .as('updated_at'),
       ])
       .where((eb) =>
-        eb.or([
-          eb('fts.quantity', 'is not', null),
-          eb('nfts.token_id', 'is not', null),
+        eb.and([
+          eb.or([
+            eb('fts.user_id', '=', user.id),
+            eb('nfts.user_id', '=', user.id),
+          ]),
+          eb.or([eb('fts.id', 'is not', null), eb('nfts.id', 'is not', null)]),
         ]),
       )
       .orderBy('assets.created_at', 'desc')
       .execute();
 
-    // Remove null quantity and token_id values
-    const assets: Selectable<Asset>[] = result.map((asset) => {
+    const assets: Selectable<
+      Asset & { quantity: number | null; token_id: string | null }
+    >[] = result.map((asset) => {
       const filteredAsset = Object.fromEntries(
         Object.entries(asset).filter(([, value]) => value !== null),
-      ) as Selectable<Asset>;
+      ) as unknown as Selectable<
+        Asset & { quantity: number | null; token_id: string | null }
+      >;
       return filteredAsset;
     });
     return assets;
@@ -84,10 +110,28 @@ export class AssetsRepository {
     return `This action returns a #${id} asset`;
   }
 
-  async remove(id: string) {
-    return await this.db
-      .deleteFrom('assets')
-      .where('assets.id', '=', id)
+  async remove(id: string, user: Selectable<User>) {
+    const result = await this.db
+      .selectFrom('assets')
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
+      .select(['assets.type'])
+      .where((eb) =>
+        eb.or([
+          eb.and([eb('fts.id', '=', id), eb('fts.user_id', '=', user.id)]),
+          eb.and([eb('nfts.id', '=', id), eb('nfts.user_id', '=', user.id)]),
+        ]),
+      )
       .executeTakeFirst();
+
+    if (!result) throw new NotFoundException('Asset not found');
+
+    const table = result.type === 'ERC-20' ? 'fts' : 'nfts';
+
+    const deletedRows = await this.db
+      .deleteFrom(table)
+      .where('id', '=', id)
+      .executeTakeFirst();
+    return deletedRows;
   }
 }
