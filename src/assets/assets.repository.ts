@@ -52,11 +52,11 @@ export class AssetsRepository {
     return nft;
   }
 
-  async findAll() {
+  async findAllBy(user: Selectable<User>) {
     const result = await this.db
       .selectFrom('assets')
-      .leftJoin('fts', 'fts.id', 'assets.id')
-      .leftJoin('nfts', 'nfts.id', 'assets.id')
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
       .select([
         'assets.id',
         'assets.name',
@@ -71,8 +71,8 @@ export class AssetsRepository {
       ])
       .where((eb) =>
         eb.or([
-          eb('fts.quantity', 'is not', null),
-          eb('nfts.token_id', 'is not', null),
+          eb('fts.user_id', '=', user.id),
+          eb('nfts.user_id', '=', user.id),
         ]),
       )
       .orderBy('assets.created_at', 'desc')

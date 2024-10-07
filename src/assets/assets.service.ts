@@ -54,8 +54,8 @@ export class AssetsService {
     }
   }
 
-  findAll() {
-    return this.assetsRepository.findAll();
+  findAllBy(user: Selectable<User>) {
+    return this.assetsRepository.findAllBy(user);
   }
 
   remove(id: string, user: Selectable<User>) {

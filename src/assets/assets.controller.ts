@@ -58,14 +58,23 @@ export class AssetsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  async findAll() {
-    const assets = await this.assetsService.findAll();
-    return {
-      success: true,
-      message: 'Assets fetched successfully',
-      data: assets,
-    };
+  async findAllUserAssets(@Req() request: Request) {
+    try {
+      const user = request['user'];
+      const assets = await this.assetsService.findAllBy(user);
+      return {
+        success: true,
+        message: 'Assets fetched successfully',
+        data: assets,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @UseGuards(AuthGuard)
