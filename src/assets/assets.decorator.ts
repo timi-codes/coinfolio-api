@@ -16,7 +16,11 @@ export class SwaggerDecorator {
       case 'create':
         return applyDecorators(
           ...baseDecorator,
-          ApiOperation({ summary: 'Create a new asset' }),
+          ApiOperation({
+            summary: 'Create a new asset',
+            description:
+              "Adds a new asset (e.g., ERC-20 or ERC-721 token) to the user's asset list.",
+          }),
           ApiBody({
             description: 'Details of the asset to create',
             type: CreateAssetDto,
@@ -60,7 +64,10 @@ export class SwaggerDecorator {
       case 'findAllUserAssets':
         return applyDecorators(
           ...baseDecorator,
-          ApiOperation({ summary: 'Fetch all user assets' }),
+          ApiOperation({
+            summary: 'Fetch all user assets',
+            description: "Retrieves all assets linked to the user's profile.",
+          }),
           ApiResponse({
             status: 200,
             description: 'Assets fetched successfully',
@@ -98,7 +105,10 @@ export class SwaggerDecorator {
       case 'remove':
         return applyDecorators(
           ...baseDecorator,
-          ApiOperation({ summary: 'Remove an asset by ID' }),
+          ApiOperation({
+            summary: 'Remove an asset by ID',
+            description: "Removes a specific asset from the user's asset list.",
+          }),
           ApiParam({ name: 'id', required: true, description: 'Asset ID' }),
           ApiResponse({
             status: 200,
@@ -124,7 +134,11 @@ export class SwaggerDecorator {
       case 'updatePrice':
         return applyDecorators(
           ...baseDecorator,
-          ApiOperation({ summary: 'Update asset prices' }),
+          ApiOperation({
+            summary: 'Update asset prices',
+            description:
+              'Triggers the daily asset price update cron job manually',
+          }),
           ApiResponse({
             status: 200,
             description: 'Asset prices updated successfully',
@@ -145,7 +159,11 @@ export class SwaggerDecorator {
       case 'getHistoricalValue':
         return applyDecorators(
           ...baseDecorator,
-          ApiOperation({ summary: 'Get historical value of an asset by ID' }),
+          ApiOperation({
+            summary: 'Get historical value of an asset by ID',
+            description:
+              'Retrieves historical values and PnL data for a specific asset over time.',
+          }),
           ApiParam({ name: 'id', required: true, description: 'Asset ID' }),
           ApiResponse({
             status: 200,
