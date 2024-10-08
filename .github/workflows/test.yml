@@ -25,5 +25,5 @@ jobs:
       - name: Run ESLint
         run: docker run $IMAGE_TAG sh -c 'yarn lint'
  
-      # - name: Run tests
-      #   run: docker run $IMAGE_TAG sh -c 'yarn test'
+      - name: Run tests
+        run: docker run $IMAGE_TAG sh -c 'yarn test'

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks.service';
-import { PortfolioModule } from 'src/portfolio/portfolio.module';
+import { PortfolioModule } from '../portfolio/portfolio.module';
 
 @Module({
   imports: [ScheduleModule.forRoot(), PortfolioModule],

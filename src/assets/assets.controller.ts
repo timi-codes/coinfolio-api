@@ -13,15 +13,15 @@ import {
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
-import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
-import { TasksService } from 'src/tasks/tasks.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { ValidateUuidPipe } from '../common/pipes/validate-uuid.pipe';
+import { TasksService } from '../tasks/tasks.service';
+import { AuthGuard } from '../auth/auth.guard';
 import { AssetType, IAsset } from './entities/asset.entity';
 import { SwaggerDecorator } from './assets.decorator';
-import { SuccessResponse } from 'src/common/types/success-response.interface';
-import { CurrentUser } from 'src/common/decorator/current-user-decorator';
-import { IUser } from 'src/auth/entities/user.entities';
-import { IPortfolioStats } from 'src/portfolio/entities/portfolio-stats';
+import { SuccessResponse } from '../common/types/success-response.interface';
+import { CurrentUser } from '../common/decorator/current-user-decorator';
+import { IUser } from '../auth/entities/user.entities';
+import { IPortfolioStats } from '../portfolio/entities/portfolio-stats';
 
 @Controller('assets')
 export class AssetsController {

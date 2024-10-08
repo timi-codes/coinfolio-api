@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RequireTokenDto } from './dto/token.dto';
 import { SwaggerDecorator } from './auth.decorator';
-import { SuccessResponse } from 'src/common/types/success-response.interface';
+import { SuccessResponse } from '../common/types/success-response.interface';
 import { Auth } from './entities/auth.entities';
 
 @Controller('auth')
