@@ -10,7 +10,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Coinfolio API')
     .setDescription(
-      'API to empower individuals to manage, track, and analyze the value of their digital assets, including NFTs (ERC-721) and FTs (ERC-20) tokens',
+      'API endpoints to manage, track, and analyze the value of your digital assets, including NFTs (ERC-721) and FTs (ERC-20) tokens',
     )
     .setVersion('1.0')
     .addBearerAuth(
@@ -19,11 +19,16 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
       },
-      'XYZ',
+      'JWT',
     )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api-docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(

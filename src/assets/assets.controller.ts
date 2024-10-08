@@ -12,16 +12,15 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
 import { TasksService } from 'src/tasks/tasks.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AssetType } from './entities/asset.entity';
+import { SwaggerDecorator } from './assets.decorator';
 
 @Controller('assets')
-@ApiTags('assets')
 export class AssetsController {
   constructor(
     private readonly assetsService: AssetsService,
@@ -30,6 +29,7 @@ export class AssetsController {
 
   @UseGuards(AuthGuard)
   @Post()
+  @SwaggerDecorator.getDecorators('create')
   async create(
     @Body() createAssetDto: CreateAssetDto,
     @Req() request: Request,
@@ -62,6 +62,7 @@ export class AssetsController {
 
   @UseGuards(AuthGuard)
   @Get()
+  @SwaggerDecorator.getDecorators('findAllUserAssets')
   async findAllUserAssets(@Req() request: Request) {
     try {
       const user = request['user'];
@@ -81,6 +82,7 @@ export class AssetsController {
 
   @UseGuards(AuthGuard)
   @Delete(':id')
+  @SwaggerDecorator.getDecorators('remove')
   @UsePipes(new ValidateUuidPipe())
   async remove(@Param('id') id: string, @Req() request: Request) {
     try {
@@ -91,12 +93,12 @@ export class AssetsController {
       if (result.numDeletedRows > 0) {
         return {
           success: true,
-          message: 'Asset deleted successfully',
+          message: 'Asset removed successfully',
         };
       } else {
         return {
           success: true,
-          message: 'Asset already deleted or not found',
+          message: 'Asset already removed or not found',
         };
       }
     } catch (error) {
@@ -108,6 +110,7 @@ export class AssetsController {
   }
 
   @Post('update-prices')
+  @SwaggerDecorator.getDecorators('updatePrice')
   async updatePrice() {
     await this.tasksService.handleDailyPriceUpdate();
     return {
@@ -119,6 +122,7 @@ export class AssetsController {
   @UseGuards(AuthGuard)
   @Get('/:id/history')
   @UsePipes(new ValidateUuidPipe())
+  @SwaggerDecorator.getDecorators('getHistoricalValue')
   async getHistoricalValue(@Param('id') id: string, @Req() request: Request) {
     try {
       const user = request['user'];
