@@ -36,6 +36,7 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.1",
+    "@nestjs/swagger": "^7.4.2",
     "@privy-io/server-auth": "^1.14.2",
     "axios": "^1.7.7",
     "bullmq": "^5.17.1",

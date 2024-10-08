@@ -9,7 +9,7 @@ import globals from "globals";
 export default [
     js.configs.recommended,
     {
-        ignores: ['dist/**'],  // Ignore the dist directory
+        ignores: ['dist/**'],
         files: ['**/*.ts', '**/*.tsx'],
         plugins: {
             '@typescript-eslint': tsPlugin,

@@ -146,7 +146,7 @@ export class AssetsRepository {
         'assets.contract_address',
       )
       .select((eb) => [
-        eb.ref('asset_daily_prices.created_at').as('date'),
+        eb.ref('asset_daily_prices.created_at').as('timestamp'),
         sql<number>`COALESCE(price * quantity, price)`.as('total_value'),
         sql<number>`COALESCE(
                         (price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * quantity,
@@ -156,7 +156,7 @@ export class AssetsRepository {
       ])
       .where((eb) =>
         eb.and([
-          eb.or([eb('fts.asset_id', '=', id), eb('nfts.asset_id', '=', id)]),
+          eb.or([eb('fts.id', '=', id), eb('nfts.id', '=', id)]),
           eb.or([
             eb('fts.user_id', '=', user.id),
             eb('nfts.user_id', '=', user.id),
