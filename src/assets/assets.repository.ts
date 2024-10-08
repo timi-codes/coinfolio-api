@@ -6,7 +6,7 @@ import {
   NonFungibleToken,
   User,
 } from '../database/db.interface';
-import { Insertable, Selectable } from 'kysely';
+import { Insertable, Selectable, sql } from 'kysely';
 
 @Injectable()
 export class AssetsRepository {
@@ -133,5 +133,38 @@ export class AssetsRepository {
       .where('id', '=', id)
       .executeTakeFirst();
     return deletedRows;
+  }
+
+  async getAssetValueHistory(id: string, user: Selectable<User>) {
+    const result = await this.db
+      .selectFrom('assets')
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
+      .leftJoin(
+        'asset_daily_prices',
+        'asset_daily_prices.contract_address',
+        'assets.contract_address',
+      )
+      .select((eb) => [
+        eb.ref('asset_daily_prices.created_at').as('date'),
+        sql<number>`COALESCE(price * quantity, price)`.as('total_value'),
+        sql<number>`COALESCE(
+                        (price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * quantity,
+                        price - coalesce(fts.price_at_creation, nfts.price_at_creation)
+                    )
+                `.as('PnL'),
+      ])
+      .where((eb) =>
+        eb.and([
+          eb.or([eb('fts.asset_id', '=', id), eb('nfts.asset_id', '=', id)]),
+          eb.or([
+            eb('fts.user_id', '=', user.id),
+            eb('nfts.user_id', '=', user.id),
+          ]),
+        ]),
+      )
+      .execute();
+
+    return result;
   }
 }
