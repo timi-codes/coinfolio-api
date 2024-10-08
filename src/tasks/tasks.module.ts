@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks.service';
-import { HttpModule } from '@nestjs/axios';
-import { AssetsRepository } from 'src/assets/assets.repository';
+import { PortfolioModule } from 'src/portfolio/portfolio.module';
 
 @Module({
-  imports: [HttpModule, ScheduleModule.forRoot()],
-  providers: [TasksService, AssetsRepository],
+  imports: [ScheduleModule.forRoot(), PortfolioModule],
+  providers: [TasksService],
   exports: [TasksService],
 })
 export class TasksModule {}

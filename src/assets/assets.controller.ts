@@ -78,7 +78,7 @@ export class AssetsController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete(':id')
+  @Delete(':id([a-zA-Z]{7})')
   @UsePipes(new ValidateUuidPipe())
   async remove(@Param('id') id: string, @Req() request: Request) {
     try {

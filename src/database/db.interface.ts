@@ -17,6 +17,7 @@ export interface FungibleToken {
   asset_id: string;
   user_id: string;
   quantity: bigint;
+  price_at_creation: number;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
@@ -26,6 +27,7 @@ export interface NonFungibleToken {
   asset_id: string;
   user_id: string;
   token_id: string;
+  price_at_creation: number;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
