@@ -6,13 +6,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { SwaggerDecorator } from './portfolio.decorators';
-import { IUser } from 'src/auth/entities/user.entities';
-import { CurrentUser } from 'src/common/decorator/current-user-decorator';
+import { IUser } from '../auth/entities/user.entities';
+import { CurrentUser } from '../common/decorator/current-user-decorator';
 import { IPortfolioStats } from './entities/portfolio-stats';
-import { SuccessResponse } from 'src/common/types/success-response.interface';
+import { SuccessResponse } from '../common/types/success-response.interface';
 
 @Controller('portfolio')
 @ApiTags('portfolio')

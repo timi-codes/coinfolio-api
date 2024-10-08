@@ -1,5 +1,5 @@
 import { Selectable } from 'kysely';
-import { Asset } from 'src/database/db.interface';
+import { Asset } from '../../database/db.interface';
 
 export enum AssetType {
   ERC20 = 'ERC-20',
