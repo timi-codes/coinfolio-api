@@ -112,11 +112,18 @@ export class AssetsController {
   @Post('update-prices')
   @SwaggerDecorator.getDecorators('updatePrice')
   async updatePrice() {
-    await this.tasksService.handleDailyPriceUpdate();
-    return {
-      success: true,
-      message: 'Asset prices updated successfully',
-    };
+    try {
+      await this.tasksService.handleDailyPriceUpdate();
+      return {
+        success: true,
+        message: 'Asset prices updated successfully',
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @UseGuards(AuthGuard)
