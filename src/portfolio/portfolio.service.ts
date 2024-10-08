@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Selectable } from 'kysely';
+import { Selectable, sql } from 'kysely';
 import { AssetsService } from '../assets/assets.service';
 import { Asset, Database, User } from '../database/db.interface';
 import { AssetType } from '../assets/entities/asset.entity';
@@ -20,24 +20,75 @@ export class PortfolioService {
   ) {}
 
   async getPortfolio(user: Selectable<User>) {
-    const assets = await this.assetsService.findAllBy(user);
-
-    const last_daily_prices = await this.db
-      .selectFrom('asset_daily_prices')
-      .select(['contract_address', 'price', 'created_at'])
-      .where(
-        'contract_address',
-        'in',
-        assets.map((asset) => asset.contract_address),
+    const portfolio = await this.db
+      .selectFrom('assets')
+      .leftJoin('fts', 'fts.asset_id', 'assets.id')
+      .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
+      .select((eb) => [
+        eb
+          .selectFrom('asset_daily_prices')
+          .select((eb2) => [
+            eb2.fn
+              .max(
+                sql<string>`
+                                COALESCE(
+                                    (price * fts.quantity),
+                                    price
+                                )
+                            `,
+              )
+              .as('aggregated_total_value'),
+          ])
+          .whereRef(
+            'asset_daily_prices.contract_address',
+            '=',
+            'assets.contract_address',
+          )
+          .groupBy('asset_daily_prices.created_at')
+          .orderBy('asset_daily_prices.created_at', 'desc')
+          .limit(1)
+          .as('total_value'),
+        eb
+          .selectFrom('asset_daily_prices')
+          .select((eb2) => [
+            eb2.fn
+              .max(
+                sql<string>`(asset_daily_prices.price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * coalesce(fts.quantity, 1)`,
+              )
+              .as('aggregated_PnL'),
+          ])
+          .whereRef(
+            'asset_daily_prices.contract_address',
+            '=',
+            'assets.contract_address',
+          )
+          .groupBy('asset_daily_prices.created_at')
+          .orderBy('asset_daily_prices.created_at', 'desc')
+          .limit(1)
+          .as('PnL'),
+      ])
+      .where((eb) =>
+        eb.or([
+          eb('fts.user_id', '=', user.id),
+          eb('nfts.user_id', '=', user.id),
+        ]),
       )
-      .distinctOn('contract_address')
-      .orderBy('contract_address')
-      .orderBy('created_at', 'desc')
       .execute();
 
-    console.log(last_daily_prices);
+    const result = portfolio.reduce(
+      (acc, curr) => {
+        if (curr.total_value) {
+          acc.total_value += parseFloat(curr.total_value);
+        }
+        if (curr.PnL) {
+          acc.PnL += parseFloat(curr.PnL);
+        }
+        return acc;
+      },
+      { total_value: 0, PnL: 0 },
+    );
 
-    return null;
+    return result;
   }
 
   async getAssetPrice(asset: Selectable<Asset>) {
