@@ -117,10 +117,10 @@ export class AssetsController {
   @UseGuards(AuthGuard)
   @Get('/:id/history')
   @UsePipes(new ValidateUuidPipe())
-  async getAssetValueHistory(@Param('id') id: string, @Req() request: Request) {
+  async getHistoricalValue(@Param('id') id: string, @Req() request: Request) {
     try {
       const user = request['user'];
-      const assets = await this.assetsService.getAssetValueHistory(id, user);
+      const assets = await this.assetsService.getHistoricalValue(id, user);
       return {
         success: true,
         message: 'Asset value history fetched successfully',

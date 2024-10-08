@@ -73,8 +73,8 @@ export class AssetsService {
     return this.assetsRepository.remove(id, user);
   }
 
-  getAssetValueHistory(id: string, user: Selectable<User>) {
-    return this.assetsRepository.getAssetValueHistory(id, user);
+  getHistoricalValue(id: string, user: Selectable<User>) {
+    return this.assetsRepository.getHistoricalValue(id, user);
   }
 
   private async fetchTokenMetadata(

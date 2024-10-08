@@ -135,7 +135,7 @@ export class AssetsRepository {
     return deletedRows;
   }
 
-  async getAssetValueHistory(id: string, user: Selectable<User>) {
+  async getHistoricalValue(id: string, user: Selectable<User>) {
     const result = await this.db
       .selectFrom('assets')
       .leftJoin('fts', 'fts.asset_id', 'assets.id')
