@@ -2,14 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { AssetsRepository } from './assets.repository';
 import Moralis from 'moralis';
-import { AssetType } from './entities/asset.entity';
+import { AssetType, IAsset } from './entities/asset.entity';
 import { ConfigService } from '@nestjs/config';
 import { TokenMetadata } from './types/token-metadata.interface';
 import {
   GetNFTMetadataResponseAdapter,
   GetTokenMetadataResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
-import { Asset, User } from '../database/db.interface';
+import { User } from '../database/db.interface';
 import { Insertable, Selectable } from 'kysely';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -36,7 +36,7 @@ export class AssetsService {
       type: data.type,
     });
 
-    let assetWithMetadata: Insertable<Asset> | null = null;
+    let assetWithMetadata: IAsset | null = null;
 
     if (data.type === AssetType.ERC721) {
       const nft = await this.assetsRepository.nft({

@@ -152,7 +152,7 @@ export class AssetsRepository {
                         (price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * quantity,
                         price - coalesce(fts.price_at_creation, nfts.price_at_creation)
                     )
-                `.as('PnL'),
+                `.as('pnl'),
       ])
       .where((eb) =>
         eb.and([

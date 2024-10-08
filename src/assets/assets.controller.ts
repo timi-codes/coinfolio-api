@@ -10,15 +10,18 @@ import {
   HttpStatus,
   UsePipes,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
 import { TasksService } from 'src/tasks/tasks.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { AssetType } from './entities/asset.entity';
+import { AssetType, IAsset } from './entities/asset.entity';
 import { SwaggerDecorator } from './assets.decorator';
+import { SuccessResponse } from 'src/common/types/success-response.interface';
+import { CurrentUser } from 'src/common/decorator/current-user-decorator';
+import { IUser } from 'src/auth/entities/user.entities';
+import { IPortfolioStats } from 'src/portfolio/entities/portfolio-stats';
 
 @Controller('assets')
 export class AssetsController {
@@ -32,11 +35,9 @@ export class AssetsController {
   @SwaggerDecorator.getDecorators('create')
   async create(
     @Body() createAssetDto: CreateAssetDto,
-    @Req() request: Request,
-  ) {
+    @CurrentUser() user: IUser,
+  ): Promise<SuccessResponse<IAsset>> {
     try {
-      const user = request['user'];
-
       const asset = await this.assetsService.create(user, createAssetDto);
       return {
         success: true,
@@ -63,9 +64,10 @@ export class AssetsController {
   @UseGuards(AuthGuard)
   @Get()
   @SwaggerDecorator.getDecorators('findAllUserAssets')
-  async findAllUserAssets(@Req() request: Request) {
+  async findAllUserAssets(
+    @CurrentUser() user: IUser,
+  ): Promise<SuccessResponse<IAsset[]>> {
     try {
-      const user = request['user'];
       const assets = await this.assetsService.findAllBy(user);
       return {
         success: true,
@@ -84,10 +86,11 @@ export class AssetsController {
   @Delete(':id')
   @SwaggerDecorator.getDecorators('remove')
   @UsePipes(new ValidateUuidPipe())
-  async remove(@Param('id') id: string, @Req() request: Request) {
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser() user: IUser,
+  ): Promise<SuccessResponse<null>> {
     try {
-      const user = request['user'];
-
       const result = await this.assetsService.remove(id, user);
 
       if (result.numDeletedRows > 0) {
@@ -109,14 +112,20 @@ export class AssetsController {
     }
   }
 
-  @Post('update-prices')
-  @SwaggerDecorator.getDecorators('updatePrice')
-  async updatePrice() {
+  @UseGuards(AuthGuard)
+  @Get('/:id/history')
+  @UsePipes(new ValidateUuidPipe())
+  @SwaggerDecorator.getDecorators('getHistoricalValue')
+  async getHistoricalValue(
+    @Param('id') id: string,
+    @CurrentUser() user: IUser,
+  ): Promise<SuccessResponse<IPortfolioStats[]>> {
     try {
-      await this.tasksService.handleDailyPriceUpdate();
+      const assets = await this.assetsService.getHistoricalValue(id, user);
       return {
         success: true,
-        message: 'Asset prices updated successfully',
+        message: 'Asset value history fetched successfully',
+        data: assets,
       };
     } catch (error) {
       throw new HttpException(
@@ -126,18 +135,14 @@ export class AssetsController {
     }
   }
 
-  @UseGuards(AuthGuard)
-  @Get('/:id/history')
-  @UsePipes(new ValidateUuidPipe())
-  @SwaggerDecorator.getDecorators('getHistoricalValue')
-  async getHistoricalValue(@Param('id') id: string, @Req() request: Request) {
+  @Post('update-prices')
+  @SwaggerDecorator.getDecorators('updatePrice')
+  async updatePrice() {
     try {
-      const user = request['user'];
-      const assets = await this.assetsService.getHistoricalValue(id, user);
+      await this.tasksService.handleDailyPriceUpdate();
       return {
         success: true,
-        message: 'Asset value history fetched successfully',
-        data: assets,
+        message: 'Asset prices updated successfully',
       };
     } catch (error) {
       throw new HttpException(
