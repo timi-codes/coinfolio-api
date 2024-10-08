@@ -1,5 +1,5 @@
 export interface IPortfolioStats {
-  timestamp: Date;
+  timestamp?: Date | undefined;
   total_value: number;
   pnl: number;
 }

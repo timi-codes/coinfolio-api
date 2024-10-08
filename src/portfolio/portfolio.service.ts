@@ -58,7 +58,7 @@ export class PortfolioService {
           .groupBy('asset_daily_prices.created_at')
           .orderBy('asset_daily_prices.created_at', 'desc')
           .limit(1)
-          .as('PnL'),
+          .as('pnl'),
       ])
       .where((eb) =>
         eb.or([
@@ -73,12 +73,12 @@ export class PortfolioService {
         if (curr.total_value) {
           acc.total_value += parseFloat(curr.total_value);
         }
-        if (curr.PnL) {
-          acc.PnL += parseFloat(curr.PnL);
+        if (curr.pnl) {
+          acc.pnl += parseFloat(curr.pnl);
         }
         return acc;
       },
-      { total_value: 0, PnL: 0 },
+      { total_value: 0, pnl: 0 },
     );
 
     return result;
