@@ -12,6 +12,8 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RequireTokenDto } from './dto/token.dto';
 import { SwaggerDecorator } from './auth.decorator';
+import { SuccessResponse } from 'src/common/types/success-response.interface';
+import { Auth } from './entities/auth.entities';
 
 @Controller('auth')
 @ApiTags('exchange-token')
@@ -20,7 +22,7 @@ export class AuthController {
 
   @Post()
   @SwaggerDecorator('auth')
-  async auth(@Body() body: RequireTokenDto) {
+  async auth(@Body() body: RequireTokenDto): Promise<SuccessResponse<Auth>> {
     try {
       const token = body.token;
 
@@ -35,13 +37,13 @@ export class AuthController {
 
       return {
         success: true,
+        message: 'successfully authenticated',
         data: {
           authToken,
           user,
         },
       };
     } catch (error) {
-      console.error(error);
       if (error instanceof BadRequestException) {
         throw error;
       }
