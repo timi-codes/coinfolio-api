@@ -1,32 +1,37 @@
 import {
   Controller,
   Post,
-  Headers,
   UnauthorizedException,
   BadRequestException,
   Get,
   HttpException,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ApiTags } from '@nestjs/swagger';
+import { RequireTokenDto } from './dto/token.dto';
+import { SwaggerDecorator } from './auth.decorator';
 
 @Controller('auth')
+@ApiTags('exchange-token')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  async auth(@Headers('Authorization') authorization: string) {
+  @SwaggerDecorator('auth')
+  async auth(@Body() body: RequireTokenDto) {
     try {
-      if (!authorization) {
+      const token = body.token;
+
+      if (!body.token) {
         throw new BadRequestException(
           'Privy access token or test token is required in header',
         );
       }
 
-      const privyToken = authorization.replace('Bearer ', '');
-
       const { authToken, user } =
-        await this.authService.exchangeAuthToken(privyToken);
+        await this.authService.exchangeAuthToken(token);
 
       return {
         success: true,
@@ -46,6 +51,7 @@ export class AuthController {
   }
 
   @Get('generate-test-token')
+  @SwaggerDecorator('generate-test-token')
   async generateTestToken() {
     try {
       const token = await this.authService.generateTestAuthToken();

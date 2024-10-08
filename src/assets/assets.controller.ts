@@ -12,6 +12,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidateUuidPipe } from 'src/common/pipes/validate-uuid.pipe';
@@ -20,6 +21,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { AssetType } from './entities/asset.entity';
 
 @Controller('assets')
+@ApiTags('assets')
 export class AssetsController {
   constructor(
     private readonly assetsService: AssetsService,
