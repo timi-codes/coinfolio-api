@@ -104,12 +104,14 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 - Run migrations
   > Run the command below to create the database schema
   ```shell
-  $ yarn run db:migrate:up
+  $ yarn run db:migrate
   ```
   Other commands:
     ```bash
       # create a new migration
       $ yarn run migrate:create <migration_name>
+      # run the next migration
+      $ yarn run db:migrate:up
       # rollback the last migration
       $ yarn run db:migrate:down
       # rollback all migrations
@@ -134,7 +136,7 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 - Run migrations
   > Run the command below to create the database schema
   ```shell
-  $ docker compose run coinfolio-api yarn run db:migrate:up
+  $ docker compose run coinfolio-api yarn run db:migrate
   ```
 
 - Run the project

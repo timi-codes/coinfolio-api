@@ -20,6 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:create": "npx kysely-ctl migrate make",
+    "db:migrate": "npx kysely-ctl migrate latest",
     "db:migrate:up": "npx kysely-ctl migrate up",
     "db:migrate:down": "npx kysely-ctl migrate down",
     "db:rollback": "npx kysely-ctl migrate rollback",
