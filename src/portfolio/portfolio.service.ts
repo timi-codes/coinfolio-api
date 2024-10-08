@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Selectable, sql } from 'kysely';
-import { AssetsService } from '../assets/assets.service';
 import { Asset, Database, User } from '../database/db.interface';
 import { AssetType } from '../assets/entities/asset.entity';
 import Moralis from 'moralis';
@@ -13,7 +12,6 @@ export class PortfolioService {
   private readonly logger = new Logger(PortfolioService.name);
 
   constructor(
-    private readonly assetsService: AssetsService,
     private readonly httpService: HttpService,
     private readonly db: Database,
     private readonly configService: ConfigService,
@@ -107,7 +105,6 @@ export class PortfolioService {
         .pipe(
           map((response) => response.data),
           catchError((error) => {
-            console.log(error);
             this.logger.error(
               `Failed to fetch price for asset ${asset.name}: ${error.message}`,
             );
