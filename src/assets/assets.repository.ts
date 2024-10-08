@@ -57,32 +57,50 @@ export class AssetsRepository {
       .selectFrom('assets')
       .leftJoin('fts', 'fts.asset_id', 'assets.id')
       .leftJoin('nfts', 'nfts.asset_id', 'assets.id')
-      .select([
-        'assets.id',
+      .select((eb) => [
+        eb
+          .fn<string>('coalesce', [eb.ref('fts.id'), eb.ref('nfts.id')])
+          .as('id'),
         'assets.name',
         'assets.symbol',
-        'assets.contract_address',
         'assets.chain',
+        'assets.contract_address',
         'assets.type',
-        'assets.created_at',
-        'assets.updated_at',
-        'fts.quantity',
-        'nfts.token_id',
+        eb.ref('nfts.token_id').as('token_id'),
+        eb.ref('fts.quantity').as('quantity'),
+        eb
+          .fn<string>('coalesce', [
+            eb.ref('nfts.created_at'),
+            eb.ref('fts.created_at'),
+          ])
+          .as('created_at'),
+        eb
+          .fn<string>('coalesce', [
+            eb.ref('nfts.updated_at'),
+            eb.ref('fts.updated_at'),
+          ])
+          .as('updated_at'),
       ])
       .where((eb) =>
-        eb.or([
-          eb('fts.user_id', '=', user.id),
-          eb('nfts.user_id', '=', user.id),
+        eb.and([
+          eb.or([
+            eb('fts.user_id', '=', user.id),
+            eb('nfts.user_id', '=', user.id),
+          ]),
+          eb.or([eb('fts.id', 'is not', null), eb('nfts.id', 'is not', null)]),
         ]),
       )
       .orderBy('assets.created_at', 'desc')
       .execute();
 
-    // Remove null quantity and token_id values
-    const assets: Selectable<Asset>[] = result.map((asset) => {
+    const assets: Selectable<
+      Asset & { quantity: number | null; token_id: string | null }
+    >[] = result.map((asset) => {
       const filteredAsset = Object.fromEntries(
         Object.entries(asset).filter(([, value]) => value !== null),
-      ) as Selectable<Asset>;
+      ) as unknown as Selectable<
+        Asset & { quantity: number | null; token_id: string | null }
+      >;
       return filteredAsset;
     });
     return assets;

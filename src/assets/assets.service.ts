@@ -9,14 +9,17 @@ import {
   GetNFTMetadataResponseAdapter,
   GetTokenMetadataResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
-import { User } from 'src/database/db.interface';
+import { Asset, User } from '../database/db.interface';
 import { Insertable, Selectable } from 'kysely';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class AssetsService {
   constructor(
     private readonly assetsRepository: AssetsRepository,
     private readonly configService: ConfigService,
+    @InjectQueue('portfolio') private portfolioQueue: Queue,
   ) {
     const moralisApiKey = this.configService.get<string>('MORALIS_API_KEY');
     Moralis.start({ apiKey: moralisApiKey });
@@ -33,25 +36,33 @@ export class AssetsService {
       type: data.type,
     });
 
+    let assetWithMetadata: Insertable<Asset> | null = null;
+
     if (data.type === AssetType.ERC721) {
       const nft = await this.assetsRepository.nft({
         token_id: tokenMetadata.token_id,
         user_id: user.id,
         asset_id: asset.id,
       });
-      return { ...asset, ...nft };
+      assetWithMetadata = { ...asset, ...nft };
     } else if (data.type === AssetType.ERC20) {
       const token = await this.assetsRepository.ft({
         quantity: data.quantity,
         user_id: user.id,
         asset_id: asset.id,
       });
-
-      return {
-        ...asset,
-        ...token,
-      };
+      assetWithMetadata = { ...asset, ...token };
     }
+
+    /* I used a queue to set the price when the asset was added to the users portfolio
+    if the third party fails to fetch the price, it will be retried later */
+    await this.portfolioQueue
+      .add('set-price-at-asset-creation', assetWithMetadata)
+      .catch((error) => {
+        console.log('Error adding job to queue', error);
+      });
+
+    return assetWithMetadata;
   }
 
   findAllBy(user: Selectable<User>) {
