@@ -55,7 +55,7 @@ export class AssetsService {
     }
 
     /* I used a queue to set the price when the asset was added to the users portfolio
-    if the third party fails to fetch the price, it will be retried later */
+    if the third party fails to fetch the price, it will be automatically be retried*/
     await this.portfolioQueue
       .add('set-price-at-asset-creation', assetWithMetadata)
       .catch((error) => {
@@ -71,6 +71,10 @@ export class AssetsService {
 
   remove(id: string, user: Selectable<User>) {
     return this.assetsRepository.remove(id, user);
+  }
+
+  getHistoricalValue(id: string, user: Selectable<User>) {
+    return this.assetsRepository.getHistoricalValue(id, user);
   }
 
   private async fetchTokenMetadata(

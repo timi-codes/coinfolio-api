@@ -78,7 +78,7 @@ export class AssetsController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete(':id([a-zA-Z]{7})')
+  @Delete(':id')
   @UsePipes(new ValidateUuidPipe())
   async remove(@Param('id') id: string, @Req() request: Request) {
     try {
@@ -112,5 +112,25 @@ export class AssetsController {
       success: true,
       message: 'Asset prices updated successfully',
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/:id/history')
+  @UsePipes(new ValidateUuidPipe())
+  async getHistoricalValue(@Param('id') id: string, @Req() request: Request) {
+    try {
+      const user = request['user'];
+      const assets = await this.assetsService.getHistoricalValue(id, user);
+      return {
+        success: true,
+        message: 'Asset value history fetched successfully',
+        data: assets,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

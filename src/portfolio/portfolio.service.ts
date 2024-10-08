@@ -29,14 +29,7 @@ export class PortfolioService {
           .selectFrom('asset_daily_prices')
           .select((eb2) => [
             eb2.fn
-              .max(
-                sql<string>`
-                                COALESCE(
-                                    (price * fts.quantity),
-                                    price
-                                )
-                            `,
-              )
+              .max(sql<string>`COALESCE((price * fts.quantity), price)`)
               .as('aggregated_total_value'),
           ])
           .whereRef(
