@@ -30,8 +30,8 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 - JWT
 
 ## Tools
-- [Moralis](https://developers.moralis.com/)
-- [Privy.io](https://www.privy.io/)
+- [Moralis](https://developers.moralis.com/) used for getting token metadata and market price.
+- [Privy.io](https://www.npmjs.com/package/@privy-io/server-auth) used for verifying access received from the login widget.
 
 
 ## Requirements
