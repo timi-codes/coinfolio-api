@@ -3,7 +3,7 @@ name: Run Pipeline Checks
 on: [pull_request]
 
 env:
-    IMAGE_TAG: coinfolio
+    IMAGE_TAG: coinfolio-api
 
 jobs:
   pipeline:
