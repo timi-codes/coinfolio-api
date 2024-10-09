@@ -30,8 +30,8 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 - JWT
 
 ## Tools
-- [Moralis](https://developers.moralis.com/)
-- [Privy.io](https://www.privy.io/)
+- [Moralis](https://developers.moralis.com/) used for getting token metadata and market price.
+- [Privy.io](https://www.npmjs.com/package/@privy-io/server-auth) used for verifying access received from the login widget.
 
 
 ## Requirements
@@ -44,20 +44,20 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 ## Installations
 
 - Clone the repository
-  > Run the command below
+  > Run the command below 
   ```shell
-  $ git clone https://github.com/coinfolio-io/coinfolio-api.git
+   git clone https://github.com/timi-codes/coinfolio-api.git && cd coinfolio-api
   ```
 
 - Install dependencies
   > Run the command below
   ```shell
-  $ yarn install
+   yarn install
   ```
 
 - Create a `.env` file in the root of the project and add the following environment variables:
   ```shell
-  $ cp .env.example .env
+   cp .env.example .env
   ```
   <details>
     <summary>How to setup environment variables</summary>
@@ -100,20 +100,37 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 
   </details>
 
+### Running with Docker
+
+- Run migrations
+  > Run the command below to create the database schema
+  ```shell
+   docker compose run coinfolio-api yarn run db:migrate
+  ```
+
+- Run the project
+  > Run the command below to start the project
+  ```shell
+   docker compose up -d --build
+  ```
+
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- The root folder contain a token.json file that contains test data
+
 ### Running Manually with Yarn
 - Run migrations
   > Run the command below to create the database schema
   ```shell
-  $ yarn run db:migrate
+   yarn run db:migrate
   ```
   Other commands:
     ```bash
       # create a new migration
-      $ yarn run migrate:create <migration_name>
+       yarn run migrate:create <migration_name>
       # run the next migration
-      $ yarn run db:migrate:up
+       yarn run db:migrate:up
       # rollback the last migration
-      $ yarn run db:migrate:down
+       yarn run db:migrate:down
       # rollback all migrations
       yarn run db:rollback
       # create a new seed
@@ -125,31 +142,15 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 - Run the project
   > Run the command below to start the project
   ```shell
-  $ yarn run start:dev
+   yarn run start:dev
   ```
 
 - Navigate to `http://localhost:4000/api-docs` to access the API documentation
-
-
-### Running with Docker
-
-- Run migrations
-  > Run the command below to create the database schema
-  ```shell
-  $ docker compose run coinfolio-api yarn run db:migrate
-  ```
-
-- Run the project
-  > Run the command below to start the project
-  ```shell
-  $ docker compose up -d --build
-  ```
-
-- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- The root folder contain a token.json file that contains test data
 
 
 ## API Documentation
-Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
 
 ## Architecture Diagram
 ![Logo](./docs/auth-architecture-image.png)

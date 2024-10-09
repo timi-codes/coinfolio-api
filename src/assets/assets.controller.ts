@@ -8,12 +8,10 @@ import {
   HttpException,
   ConflictException,
   HttpStatus,
-  UsePipes,
   UseGuards,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
-import { ValidateUuidPipe } from '../common/pipes/validate-uuid.pipe';
 import { TasksService } from '../tasks/tasks.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AssetType, IAsset } from './entities/asset.entity';
@@ -85,7 +83,6 @@ export class AssetsController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   @SwaggerDecorator.getDecorators('remove')
-  @UsePipes(new ValidateUuidPipe())
   async remove(
     @Param('id') id: string,
     @CurrentUser() user: IUser,
