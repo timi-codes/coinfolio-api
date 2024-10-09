@@ -100,6 +100,23 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 
   </details>
 
+### Running with Docker
+
+- Run migrations
+  > Run the command below to create the database schema
+  ```shell
+   docker compose run coinfolio-api yarn run db:migrate
+  ```
+
+- Run the project
+  > Run the command below to start the project
+  ```shell
+   docker compose up -d --build
+  ```
+
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- The root folder contain a token.json file that contains test data
+
 ### Running Manually with Yarn
 - Run migrations
   > Run the command below to create the database schema
@@ -129,27 +146,11 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
   ```
 
 - Navigate to `http://localhost:4000/api-docs` to access the API documentation
-
-
-### Running with Docker
-
-- Run migrations
-  > Run the command below to create the database schema
-  ```shell
-   docker compose run coinfolio-api yarn run db:migrate
-  ```
-
-- Run the project
-  > Run the command below to start the project
-  ```shell
-   docker compose up -d --build
-  ```
-
-- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- The root folder contain a token.json file that contains test data
 
 
 ## API Documentation
-Navigate to `http://localhost:4000/api-docs` to access the API documentation
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
 
 ## Architecture Diagram
 ![Logo](./docs/auth-architecture-image.png)
