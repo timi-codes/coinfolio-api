@@ -30,8 +30,8 @@ jobs:
           env:
             REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
             REGISTRY_ALIAS: c9m9e8e2
-            REPOSITORY: coinfolio
-            IMAGE_TAG: coinfolio
+            REPOSITORY: coinfolio-api
+            IMAGE_TAG: coinfolio-api
           run: |
             docker build -t $IMAGE_TAG .
             docker tag $IMAGE_TAG:latest $REGISTRY/$REGISTRY_ALIAS/$IMAGE_TAG:latest

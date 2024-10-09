@@ -14,7 +14,7 @@ FROM node:18-alpine AS create-build
 WORKDIR /user/src/app
 COPY --from=base /user/src/app ./
 RUN yarn run build
-
+USER node
 
 # Running the application:
 FROM node:18-alpine AS run
@@ -28,7 +28,5 @@ COPY package.json ./
 # Prune off the dev dependencies after build step
 RUN yarn install --production
 
-USER node
-EXPOSE 4000
 
 CMD ["yarn", "run", "start:prod"]
