@@ -152,7 +152,8 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 Navigate to `http://localhost:4000/api-docs` to access the API documentation
 
 ## Architecture Diagram
-![Logo](./docs/architecture.svg)
+![Logo](./docs/auth-architecture.png)
+
 
 
 ## Author
