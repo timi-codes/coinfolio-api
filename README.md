@@ -155,5 +155,6 @@ Navigate to `http://localhost:4000/api-docs` to access the API documentation
 ![Logo](./docs/auth-architecture.png)
 
 
+
 ## Author
 - [Timi David Tejumola](https://linkedin.com/in/timitejumola)
