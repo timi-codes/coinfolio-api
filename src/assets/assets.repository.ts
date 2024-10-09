@@ -90,7 +90,6 @@ export class AssetsRepository {
           eb.or([eb('fts.id', 'is not', null), eb('nfts.id', 'is not', null)]),
         ]),
       )
-      .orderBy('assets.created_at', 'desc')
       .execute();
 
     const assets: Selectable<
@@ -149,10 +148,10 @@ export class AssetsRepository {
         eb.ref('asset_daily_prices.created_at').as('timestamp'),
         sql<number>`COALESCE(price * quantity, price)`.as('total_value'),
         sql<number>`COALESCE(
-                        (price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * quantity,
-                        price - coalesce(fts.price_at_creation, nfts.price_at_creation)
-                    )
-                `.as('pnl'),
+            (price - coalesce(fts.price_at_creation, nfts.price_at_creation)) * quantity,
+            price - coalesce(fts.price_at_creation, nfts.price_at_creation)
+          )
+        `.as('pnl'),
       ])
       .where((eb) =>
         eb.and([
@@ -163,6 +162,7 @@ export class AssetsRepository {
           ]),
         ]),
       )
+      .orderBy('asset_daily_prices.created_at', 'desc')
       .execute();
 
     return result;

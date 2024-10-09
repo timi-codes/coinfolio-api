@@ -1,7 +1,6 @@
 import {
   Controller,
   Post,
-  UnauthorizedException,
   BadRequestException,
   Get,
   HttpException,
@@ -44,11 +43,10 @@ export class AuthController {
         },
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-
-      throw new UnauthorizedException('Invalid privy access token');
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

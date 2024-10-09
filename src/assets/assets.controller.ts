@@ -114,7 +114,6 @@ export class AssetsController {
 
   @UseGuards(AuthGuard)
   @Get('/:id/history')
-  @UsePipes(new ValidateUuidPipe())
   @SwaggerDecorator.getDecorators('getHistoricalValue')
   async getHistoricalValue(
     @Param('id') id: string,
