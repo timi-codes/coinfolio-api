@@ -1,85 +1,159 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+## Coinfolio API
+Manage, track, and analyze the value of your digital assets, including NFTs (ERC-721) and FTs (ERC-20) tokens
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
+## Getting Started
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[Technologies](#technologies)
 
-## Description
+[Tools](#tools)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Requirements](#requirements)
 
-## Project setup
+[Installations](#installations)
 
-```bash
-$ yarn install
-```
+[API Documentation](#api-documentation)
 
-## Compile and run the project
+[Architecture Diagram](#architecture-diagram)
 
-```bash
-# development
-$ yarn run start
+[Author](#author)
 
-# watch mode
-$ yarn run start:dev
+## Technologies
 
-# production mode
-$ yarn run start:prod
-```
+- NestJS
+- PostgreSQL
+- Kysely
+- TypeScript
+- Docker
+- Eslint
+- Prettier
+- JWT
 
-## Run tests
+## Tools
+- [Moralis](https://developers.moralis.com/)
+- [Privy.io](https://www.privy.io/)
 
-```bash
-# unit tests
-$ yarn run test
 
-# e2e tests
-$ yarn run test:e2e
+## Requirements
 
-# test coverage
-$ yarn run test:cov
-```
+- Node 18 LTS/Hydrogen (LTS is recommended)
+- Yarn 1+ (1.22.19 is recommended)
+- PostgreSQL 16 (LTS is recommended)
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
+## Installations
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Clone the repository
+  > Run the command below
+  ```shell
+  $ git clone https://github.com/coinfolio-io/coinfolio-api.git
+  ```
 
-## Support
+- Install dependencies
+  > Run the command below
+  ```shell
+  $ yarn install
+  ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Create a `.env` file in the root of the project and add the following environment variables:
+  ```shell
+  $ cp .env.example .env
+  ```
+  <details>
+    <summary>How to setup environment variables</summary>
 
-## Stay in touch
+    Below are the environment variables required for the project along with links to setup instructions for each service.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+    ### Database Setup
+    - `DB_HOST=localhost`
+    - `DB_PORT=5432`
+    - `DB_NAME=coinfolio`
+    - `DB_USER=postgres`
+    - `DB_PASSWORD=postgres`
 
-## License
+    [Database Setup Guide](https://www.postgresql.org/download/)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+    ### Moralis API Setup
+    - `MORALIS_API_KEY=your-api-key-here`
+
+    [Moralis Setup Guide](https://moralis.io/)
+
+    ### JWT Configuration
+    - `JWT_SECRET=your-jwt-secret`
+    - `JWT_EXPIRES_IN=7d`
+    - `JWT_ISSUER=coinfolio`
+    - `JWT_AUDIENCE=coinfolio`
+
+    [JWT Setup Guide](https://jwt.io/)
+
+    ### Privy API Setup
+    - `PRIVY_APP_ID=your-privy-app-id`
+    - `PRIVY_APP_SECRET=your-privy-app-secret`
+
+    [Privy Setup Guide](https://privy.io/)
+
+    ### Redis Setup
+    - `REDIS_HOST=localhost`
+    - `REDIS_PORT=6379`
+
+    [Redis Setup Guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/)
+
+  </details>
+
+### Running Manually with Yarn
+- Run migrations
+  > Run the command below to create the database schema
+  ```shell
+  $ yarn run db:migrate
+  ```
+  Other commands:
+    ```bash
+      # create a new migration
+      $ yarn run migrate:create <migration_name>
+      # run the next migration
+      $ yarn run db:migrate:up
+      # rollback the last migration
+      $ yarn run db:migrate:down
+      # rollback all migrations
+      yarn run db:rollback
+      # create a new seed
+      yarn run db:seed:make <seed_name>
+      # run all seeds
+      yarn run db:seed:run
+    ```
+
+- Run the project
+  > Run the command below to start the project
+  ```shell
+  $ yarn run start:dev
+  ```
+
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+
+
+### Running with Docker
+
+- Run migrations
+  > Run the command below to create the database schema
+  ```shell
+  $ docker compose run coinfolio-api yarn run db:migrate
+  ```
+
+- Run the project
+  > Run the command below to start the project
+  ```shell
+  $ docker compose up -d --build
+  ```
+
+- Navigate to `http://localhost:4000/api-docs` to access the API documentation
+
+
+## API Documentation
+Navigate to `http://localhost:4000/api-docs` to access the API documentation
+
+## Architecture Diagram
+![Logo](./docs/auth-architecture-image.png)
+
+
+## Author
+- [Timi David Tejumola](https://linkedin.com/in/timitejumola)

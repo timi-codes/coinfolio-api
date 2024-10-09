@@ -1,0 +1,50 @@
+services:
+  coinfolio-api:
+    build:
+      context: .
+      target: base
+    command: yarn run start:dev
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./src:/user/src/app/src
+    env_file:
+      - .env
+    networks:
+      - coinfolio_network
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:17
+    ports:
+      - '5432:5432'
+    networks:
+      - coinfolio_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+    env_file:
+      - docker.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    networks:
+      - coinfolio_network
+    volumes:
+      - redis_data:/data
+      
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  coinfolio_network:
+    driver: bridge
+
