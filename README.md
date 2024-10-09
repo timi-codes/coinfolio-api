@@ -44,9 +44,9 @@ Manage, track, and analyze the value of your digital assets, including NFTs (ERC
 ## Installations
 
 - Clone the repository
-  > Run the command below
+  > Run the command below 
   ```shell
-   git clone https://github.com/coinfolio-io/coinfolio-api.git
+   git clone https://github.com/timi-codes/coinfolio-api.git
   ```
 
 - Install dependencies
