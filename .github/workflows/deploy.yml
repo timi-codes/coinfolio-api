@@ -56,3 +56,12 @@ jobs:
             --service ${{ vars.AWS_SERVICE_NAME }} \
             --task-definition ${{ vars.AWS_TASK_DEFINITION_NAME }} \
             --force-new-deployment
+
+        - name: Run database migrations
+          run: |
+            aws ecs execute-command \
+            --cluster ${{ vars.AWS_CLUSTER_NAME }} \
+            --task ${{ vars.AWS_TASK_ID }} \
+            --container ${{ vars.AWS_CONTAINER_NAME }} \
+            --interactive \
+            --command "yarn run db:migrate"
