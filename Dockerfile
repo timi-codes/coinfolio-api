@@ -28,5 +28,6 @@ COPY package.json ./
 # Prune off the dev dependencies after build step
 RUN yarn install --production
 
+RUN yarn run db:migrate
 
 CMD ["yarn", "run", "start:prod"]
