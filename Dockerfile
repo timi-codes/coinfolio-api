@@ -22,7 +22,7 @@ WORKDIR /user/src/app
 
 COPY --from=base /user/src/app/node_modules ./node_modules
 COPY --from=create-build /user/src/app/dist ./dist
-COPY package.json ./
+COPY package.json kysely.config.ts ./
 
 
 # Prune off the dev dependencies after build step
